@@ -119,7 +119,7 @@ void CSketchView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	CView::OnKeyDown(nChar, nRepCnt, nFlags);
 }
-
+ 
 
 void CSketchView::OnLButtonDown(UINT nFlags, CPoint point)
 {
