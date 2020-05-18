@@ -139,11 +139,13 @@ void CSketchView::OnLButtonUp(UINT nFlags, CPoint point)
 	int height = m_startPt.y - m_endPt.y;
 	int width = m_startPt.x - m_endPt.x;
 	m_seta = (atan2(height, width) * 180) / 3.141592;
+
 	int r = (int)sqrt((double)(width * width + height * height));
 
-	m_step.cx = r / 10;
-	m_step.cy = r / 10;
-	
+	double radian = m_seta * 3.141592 / 180.0;
+	m_step.cx = (int)((r / 10) * cos(radian));
+	m_step.cy = (int)((r / 10) * sin(radian));
+	/*
 	if (m_seta >= 0 && m_seta <= 90.0)
 	{
 		m_step.cx = abs(m_step.cx);
@@ -164,6 +166,7 @@ void CSketchView::OnLButtonUp(UINT nFlags, CPoint point)
 		m_step.cx = abs(m_step.cx);
 		m_step.cy *= -1;
 	}
+	*/
 	if (abs(r) / 10 >= 3)
 	{
 		SetTimer(1, 30, 0);
