@@ -19,14 +19,25 @@ public:
 public:
 	CPoint m_circlePt = { 100, 100 };
 	CSize m_step = { 5, 5 };
-	BOOL m_clicked = false;
+	BOOL m_bClicked = false;
+	BOOL m_bPressShift = false;
 	CRect m_viewRect;
 
 	CPoint m_startPt = { 0, 0 };
 	CPoint m_endPt = { 0, 0 };
+	CPoint m_fixedPt = { 0, 0 };
 
-	const int m_radian = 40;
+
+	const int m_radius = 40;
 	double m_seta = 0.0;
+	double m_fixedSeta = 0.0;
+	double m_radian = 0.0;
+
+	int m_test = 0;
+
+
+
+
 
 // 재정의입니다.
 public:
@@ -48,12 +59,17 @@ protected:
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual void OnInitialUpdate();
+
+	LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 };
 
 #ifndef _DEBUG  // SketchView.cpp의 디버그 버전
