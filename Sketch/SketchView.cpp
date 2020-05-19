@@ -25,7 +25,6 @@ BEGIN_MESSAGE_MAP(CSketchView, CView)
 	ON_WM_KEYDOWN()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
-	ON_WM_MOVE()
 	ON_WM_TIMER()
 	ON_WM_SIZE()
 	ON_WM_MOUSEMOVE()
@@ -124,8 +123,9 @@ void CSketchView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CSketchView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	m_clicked = true;
+	KillTimer(1);
 	m_startPt = m_circlePt; // client pos
+	m_clicked = true;
 
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -135,6 +135,7 @@ void CSketchView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	m_clicked = false;
+	m_endPt = point;
 
 	int height = m_startPt.y - m_endPt.y;
 	int width = m_startPt.x - m_endPt.x;
@@ -143,45 +144,17 @@ void CSketchView::OnLButtonUp(UINT nFlags, CPoint point)
 	int r = (int)sqrt((double)(width * width + height * height));
 
 	double radian = m_seta * 3.141592 / 180.0;
-	m_step.cx = (int)((r / 10) * cos(radian));
-	m_step.cy = (int)((r / 10) * sin(radian));
-	/*
-	if (m_seta >= 0 && m_seta <= 90.0)
+	r /= 10;
+	m_step.cx = (int)(r * cos(radian));
+	m_step.cy = (int)(r * sin(radian));
+
+	if (abs(r) >= 3)
 	{
-		m_step.cx = abs(m_step.cx);
-		m_step.cy = abs(m_step.cy);
+		SetTimer(1, 50, 0);
 	}
-	else if (m_seta > 90.0 && m_seta <= 180.0)
-	{
-		m_step.cx *= -1;
-		m_step.cy = abs(m_step.cy);
-	}
-	else if (m_seta < -90.0 && m_seta >= -180.0)
-	{
-		m_step.cx *= -1;
-		m_step.cy *= -1;
-	}
-	else if (m_seta < 0 && m_seta >= -90.0)
-	{
-		m_step.cx = abs(m_step.cx);
-		m_step.cy *= -1;
-	}
-	*/
-	if (abs(r) / 10 >= 3)
-	{
-		SetTimer(1, 30, 0);
-	}
-	m_endPt = point;
 	CView::OnLButtonUp(nFlags, point);
 }
 
-
-void CSketchView::OnMove(int x, int y)
-{
-	CView::OnMove(x, y);
-	
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-}
 
 
 void CSketchView::OnTimer(UINT_PTR nIDEvent)
@@ -223,10 +196,6 @@ void CSketchView::OnMouseMove(UINT nFlags, CPoint point)
 
 	if (m_clicked == TRUE)
 	{
-		int height = m_startPt.y - m_endPt.y;
-		int width = m_startPt.x - m_endPt.x;
-		m_seta = (atan2(height, width) * 180) / 3.141592;
-
 		Invalidate();
 		m_endPt = point;
 	}
